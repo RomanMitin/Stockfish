@@ -216,12 +216,12 @@ void MainThread::search() {
   // GUI sends a "stop" or "ponderhit" command. We therefore simply wait here
   // until the GUI sends one of those commands.
 
-  while (!Threads.stop && (ponder || Limits.infinite))
+  while (!Threads.stop.load(std::memory_order_relaxed) && (ponder.load(std::memory_order_relaxed) || Limits.infinite))
   {} // Busy wait for a stop or a ponder reset
 
   // Stop the threads if not already stopped (also raise the stop if
   // "ponderhit" just reset Threads.ponder).
-  Threads.stop = true;
+  Threads.stop.store(true, std::memory_order_relaxed);
 
   // Wait until all threads have finished
   Threads.wait_for_search_finished();
@@ -314,7 +314,7 @@ void Thread::search() {
 
   // Iterative deepening loop until requested to stop or the target depth is reached
   while (   ++rootDepth < MAX_PLY
-         && !Threads.stop
+         && !Threads.stop.load(std::memory_order_relaxed)
          && !(Limits.depth && mainThread && rootDepth > Limits.depth))
   {
       // Age out PV variability metric
@@ -329,11 +329,11 @@ void Thread::search() {
       size_t pvFirst = 0;
       pvLast = 0;
 
-      if (!Threads.increaseDepth)
+      if (!Threads.increaseDepth.load(std::memory_order_relaxed))
           searchAgainCounter++;
 
       // MultiPV loop. We perform a full root search for each PV line
-      for (pvIdx = 0; pvIdx < multiPV && !Threads.stop; ++pvIdx)
+      for (pvIdx = 0; pvIdx < multiPV && !Threads.stop.load(std::memory_order_relaxed); ++pvIdx)
       {
           if (pvIdx == pvLast)
           {
@@ -379,7 +379,7 @@ void Thread::search() {
               // If search has been stopped, we break immediately. Sorting is
               // safe because RootMoves is still valid, although it refers to
               // the previous iteration.
-              if (Threads.stop)
+              if (Threads.stop.load(std::memory_order_relaxed))
                   break;
 
               // When failing high/low give some update (without cluttering
@@ -418,11 +418,11 @@ void Thread::search() {
           std::stable_sort(rootMoves.begin() + pvFirst, rootMoves.begin() + pvIdx + 1);
 
           if (    mainThread
-              && (Threads.stop || pvIdx + 1 == multiPV || Time.elapsed() > 3000))
+              && (Threads.stop.load(std::memory_order_relaxed) || pvIdx + 1 == multiPV || Time.elapsed() > 3000))
               sync_cout << UCI::pv(rootPos, rootDepth) << sync_endl;
       }
 
-      if (!Threads.stop)
+      if (!Threads.stop.load(std::memory_order_relaxed))
           completedDepth = rootDepth;
 
       if (rootMoves[0].pv[0] != lastBestMove)
@@ -435,7 +435,7 @@ void Thread::search() {
       if (   Limits.mate
           && bestValue >= VALUE_MATE_IN_MAX_PLY
           && VALUE_MATE - bestValue <= 2 * Limits.mate)
-          Threads.stop = true;
+          Threads.stop.store(true, std::memory_order_relaxed);
 
       if (!mainThread)
           continue;
@@ -447,13 +447,12 @@ void Thread::search() {
       // Use part of the gained time from a previous stable move for the current move
       for (Thread* th : Threads)
       {
-          totBestMoveChanges += th->bestMoveChanges;
-          th->bestMoveChanges = 0;
+          totBestMoveChanges += th->bestMoveChanges.exchange(0, std::memory_order_relaxed);
       }
 
       // Do we have time for the next iteration? Can we stop searching now?
       if (    Limits.use_time_management()
-          && !Threads.stop
+          && !Threads.stop.load(std::memory_order_relaxed)
           && !mainThread->stopOnPonderhit)
       {
           double fallingEval = (69 + 13 * (mainThread->bestPreviousAverageScore - bestValue)
@@ -477,16 +476,16 @@ void Thread::search() {
           {
               // If we are allowed to ponder do not stop the search now but
               // keep pondering until the GUI sends "ponderhit" or "stop".
-              if (mainThread->ponder)
+              if (mainThread->ponder.load(std::memory_order_relaxed))
                   mainThread->stopOnPonderhit = true;
               else
-                  Threads.stop = true;
+                  Threads.stop.store(true, std::memory_order_relaxed);
           }
-          else if (   !mainThread->ponder
+          else if (   !mainThread->ponder.load(std::memory_order_relaxed)
                    && Time.elapsed() > totalTime * 0.50)
-              Threads.increaseDepth = false;
+              Threads.increaseDepth.store(false, std::memory_order_relaxed);
           else
-              Threads.increaseDepth = true;
+              Threads.increaseDepth.store(true, std::memory_order_relaxed);
       }
 
       mainThread->iterValue[iterIdx] = bestValue;
@@ -1269,7 +1268,7 @@ moves_loop: // When in check, search starts here
               // we must take care to only do this for the first PV line.
               if (   moveCount > 1
                   && !thisThread->pvIdx)
-                  ++thisThread->bestMoveChanges;
+                  thisThread->bestMoveChanges.fetch_add(1, std::memory_order_relaxed);
           }
           else
               // All other moves but the PV are set to the lowest value: this
@@ -1820,13 +1819,13 @@ void MainThread::check_time() {
   }
 
   // We should not stop pondering until told so by the GUI
-  if (ponder)
+  if (ponder.load(std::memory_order_relaxed))
       return;
 
   if (   (Limits.use_time_management() && (elapsed > Time.maximum() - 10 || stopOnPonderhit))
       || (Limits.movetime && elapsed >= Limits.movetime)
       || (Limits.nodes && Threads.nodes_searched() >= (uint64_t)Limits.nodes))
-      Threads.stop = true;
+      Threads.stop.store(true, std::memory_order_relaxed);
 }
 
 
