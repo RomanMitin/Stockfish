@@ -171,9 +171,10 @@ void ThreadPool::start_thinking(Position& pos, StateListPtr& states,
 
   main()->wait_for_search_finished();
 
-  main()->stopOnPonderhit = stop = false;
-  increaseDepth = true;
-  main()->ponder = ponderMode;
+  stop.store(false, std::memory_order_relaxed);
+  main()->stopOnPonderhit = false;
+  increaseDepth.store(true, std::memory_order_relaxed);
+  main()->ponder.store(ponderMode, std::memory_order_relaxed);
   Search::Limits = limits;
   Search::RootMoves rootMoves;
 
