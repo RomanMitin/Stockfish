@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="TestCLI" tests="4" failures="0" errors="0" skipped="0">
+        <testcase classname="TestCLI" name="test_eval" time="2.641">
+            <system-out>Test case 1 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestCLI" name="test_go_nodes_1000" time="2.891">
+            <system-out>Test case 2 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestCLI" name="test_go_depth_10" time="3.487">
+            <system-out>Test case 3 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestCLI" name="test_go_perft_4" time="2.623">
+            <system-out>Test case 4 executed successfully.</system-out>
+        </testcase>
+    </testsuite>
+     <testsuite name="TestInteractive" tests="5" failures="0" errors="0" skipped="0">
+        <testcase classname="TestInteractive" name="test_startup_output" time="0.496">
+            <system-out>Test case 1 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_uci_command" time="2.129">
+            <system-out>Test case 2 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_set_threads_option" time="0.00002">
+            <system-out>Test case 3 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_ucinewgame_and_startpos_nodes_1000" time="0.345">
+            <system-out>Test case 4 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_ucinewgame_and_startpos_moves" time="0.124">
+            <system-out>Test case 5 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+        <testcase classname="TestInteractive" name="test_test" time="1.124">
+            <system-out>Test case n executed successfully.</system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="test_fen_position_with_moves_with_mate_go_depth_and_searchmoves" tests="3" failures="0" errors="0" skipped="0">
+        <testcase classname="test_fen_position_with_moves_with_mate_go_depth_and_searchmoves" name="test_verify_nnue_network" time="0.0014">
+            <system-out>Test case 1 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_fen_position_with_moves_with_mate_go_depth_and_searchmoves" name="test_multipv_setting" time="11.781">
+            <system-out>Test case 2 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_fen_position_with_moves_with_mate_go_depth_and_searchmoves" name="test_fen_position_with_skill_level" time="0.0034">
+            <system-out>Test case 3 executed successfully.</system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="TestSyzygy" tests="5" failures="0" errors="0" skipped="0">
+        <testcase classname="test_syzygy_setup" name="test_verify_nnue_network" time="2.666">
+            <system-out>Test case 1 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_syzygy_bench" name="test_multipv_setting" time="6.24">
+            <system-out>Test case 2 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_syzygy_position" name="test_fen_position_with_skill_level" time="0.28">
+            <system-out>Test case 3 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_syzygy_position" name="test_fen_position_with_skill_level_2" time="0.28">
+            <system-out>Test case 4 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="test_syzygy_position" name="test_fen_position_with_skill_level_3" time="0.28">
+            <system-out>Test case 5 executed successfully.</system-out>
+        </testcase>
+    </testsuite>
+    
+</testsuites>
