@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="Example Test Suite" tests="3" failures="1" errors="0" skipped="0">
+        <testcase classname="ExampleTest" name="testCase1" time="0.001">
+            <system-out>Test case 1 executed successfully.</system-out>
+        </testcase>
+        <testcase classname="ExampleTest" name="testCase2" time="0.002">
+            <failure message="Assertion failed">Expected true but was false</failure>
+            <system-out>Test case 2 failed.</system-out>
+        </testcase>
+        <testcase classname="ExampleTest" name="testCase3" time="0.003">
+            <system-out>Test case 3 executed successfully.</system-out>
+        </testcase>
+    </testsuite>
+</testsuites>
